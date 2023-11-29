@@ -60,5 +60,4 @@ def main():
     print("\nHistorique des conversions :")
     print(*charger_fichier('historique_conversion.txt'), sep='\n')
 
-if __name__ == "__main__":
-    main()
+main()
