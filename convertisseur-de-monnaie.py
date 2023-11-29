@@ -27,17 +27,27 @@ def ajouter_devise_preferee(devise, taux_conversion, taux_de_change_personnalise
 
 def main():
     c = CurrencyRates()
-    taux_de_change = c.get_rates('USD')
+    devises_disponibles = ['USD', 'EUR', 'JPY', 'GBP', 'CAD', 'CHF', 'AUD', 'NZD', 'CNY', 'INR', 'BRL', 'ZAR', 'MXN', 'SGD', 'THB']
+    print("Devises disponibles:", devises_disponibles)
+    devise_origine = input("Entrez la devise d'origine : ").upper()
+    devise_cible = input("Entrez la devise cible : ").upper()
+
+    if devise_origine not in devises_disponibles or devise_cible not in devises_disponibles:
+        print("Devises invalides. Veuillez choisir parmi les devises disponibles.")
+        return
+    taux_de_change_origine = c.get_rates(devise_origine)
+    taux_de_change_cible = c.get_rates(devise_cible)
+    taux_de_change = {**taux_de_change_origine, **taux_de_change_cible}  # Fusionne les taux de change
     taux_de_change_personnalise = {}
     historique_conversion = []
     montant = float(input("Entrez le montant à convertir : "))
-    devise_origine, devise_cible = input("Entrez la devise d'origine : ").upper(), input("Entrez la devise cible : ").upper()
     prix_converti = conversion(montant, devise_origine, devise_cible, taux_de_change)
 
     if prix_converti and prix_converti != 0:
         print(f"{montant} {devise_origine} équivaut à {prix_converti:.2f} {devise_cible}")
         historique_conversion.append({'montant': montant, 'devise_origine': devise_origine, 'devise_cible': devise_cible, 'prix_converti': prix_converti})
-        ajout_devise = input("Voulez-vous ajouter cette devise en favori ? (Oui/Non) : ").lower()
+        ajout_devise = input("Voulez-vous ajouter cette devise en favori ? Oui ou Non ? : ").lower()
+        
         if ajout_devise == 'oui':
             taux_conversion = float(input(f"Entrez le taux de conversion pour {devise_origine} : "))
             ajouter_devise_preferee(devise_origine, taux_conversion, taux_de_change_personnalise)
@@ -46,6 +56,7 @@ def main():
 
     if historique_conversion:
         sauvegarder_historique_conversion(historique_conversion)
+
     print("\nHistorique des conversions :")
     print(*charger_fichier('historique_conversion.txt'), sep='\n')
 
