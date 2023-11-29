@@ -1,44 +1,44 @@
 from forex_python.converter import CurrencyRates
 
-def convert_currency(amount, from_currency, to_currency, exchange_rates):
-    rate = exchange_rates.get(to_currency) / exchange_rates.get(from_currency)
-    return amount * rate if rate else None
+def conversion(montant, devise_origine, devise_cible, taux_de_change):
+    taux = taux_de_change.get(devise_cible) / taux_de_change.get(devise_origine)
+    return montant * taux if taux else None
 
-def save_conversion_history(history):
-    with open('conversion_history.txt', 'a') as file:
-        for entry in history:
-            file.write(f"{entry['amount']} {entry['from_currency']} => {entry['converted_amount']:.2f} {entry['to_currency']}\n")
+def sauvegarder_historique_conversion(historique):
+    with open('historique_conversion.txt', 'a') as fichier:
+        for entree in historique:
+            fichier.write(f"{entree['montant']} {entree['devise_origine']} => {entree['prix_converti']:.2f} {entree['devise_cible']}\n")
 
-def load_conversion_history():
+def charger_historique_conversion():
     try:
-        with open('conversion_history.txt', 'r') as file:
-            return file.readlines()
+        with open('historique_conversion.txt', 'r') as fichier:
+            return fichier.readlines()
     except FileNotFoundError:
         return []
 
 def main():
     c = CurrencyRates()
-    exchange_rates = c.get_rates('USD')
-    conversion_history = []
-    amount = float(input("Entrez le montant à convertir : "))
-    from_currency = input("Entrez la devise d'origine (par exemple, USD) : ").upper()
-    to_currency = input("Entrez la devise cible (par exemple, EUR) : ").upper()
-    converted_amount = convert_currency(amount, from_currency, to_currency, exchange_rates)
+    taux_de_change = c.get_rates('USD')
+    historique_conversion = []
+    montant = float(input("Entrez le montant à convertir : "))
+    devise_origine = input("Entrez la devise d'origine (par exemple, YEN) : ").upper()
+    devise_cible = input("Entrez la devise cible (par exemple, EUR) : ").upper()
+    prix_converti = conversion(montant, devise_origine, devise_cible, taux_de_change)
     
-    if converted_amount is not None:
-        print(f"{amount} {from_currency} équivaut à {converted_amount:.2f} {to_currency}")
-        conversion_history.append({
-            'amount': amount,
-            'from_currency': from_currency,
-            'to_currency': to_currency,
-            'converted_amount': converted_amount
+    if prix_converti is not None:
+        print(f"{montant} {devise_origine} équivaut à {prix_converti:.2f} {devise_cible}")
+        historique_conversion.append({
+            'montant': montant,
+            'devise_origine': devise_origine,
+            'devise_cible': devise_cible,
+            'prix_converti': prix_converti
         })
     else:
         print("Conversion impossible. Vérifiez les devises saisies.")
-    save_conversion_history(conversion_history)
+    sauvegarder_historique_conversion(historique_conversion)
     print("\nHistorique des conversions :")
-    for entry in load_conversion_history():
-        print(entry.strip())
+    for entree in charger_historique_conversion():
+        print(entree.strip())
 
 if __name__ == "__main__":
     main()
