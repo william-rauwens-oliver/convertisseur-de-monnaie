@@ -9,7 +9,7 @@ def sauvegarder_conversion(historique):
         fichier.writelines(f"{entree['montant']} {entree['devise_origine']} => {entree['prix_converti']:.2f} {entree['devise_cible']}\n" for entree in historique)
 
 def sauvegarder_favoris(devise, taux_conversion):
-    with open('favoris.txt', 'a') as fichier:
+    with open('favoris.txt', 'a') as fichier:  # j'ai ajouté un fichier favoris.txt en plus pour mettre tout ce que je met en favoris à l'intérieur !
         fichier.write(f"{devise} {taux_conversion}\n")
 
 def charger_fichier(nom_fichier, conversion_func=None):
