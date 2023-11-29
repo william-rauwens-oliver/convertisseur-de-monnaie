@@ -1,10 +1,10 @@
 from forex_python.converter import CurrencyRates
 
-def conversion(montant, devise_origine, devise_cible, taux_de_change):
+def convertir(montant, devise_origine, devise_cible, taux_de_change):
     taux_origine, taux_cible = taux_de_change.get(devise_origine), taux_de_change.get(devise_cible)
     return montant * (taux_cible / taux_origine) if taux_origine is not None and taux_cible is not None else None
 
-def sauvegarder_historique_conversion(historique):
+def sauvegarder_conversion(historique):
     with open('historique_conversion.txt', 'a') as fichier:
         fichier.writelines(f"{entree['montant']} {entree['devise_origine']} => {entree['prix_converti']:.2f} {entree['devise_cible']}\n" for entree in historique)
 
@@ -25,27 +25,26 @@ def ajouter_devise_preferee(devise, taux_conversion, taux_de_change_personnalise
     sauvegarder_favoris(devise, taux_conversion)
     print(f"La devise {devise} avec un taux de conversion de {taux_conversion} a été ajoutée en favori.")
 
-def main():
-    c = CurrencyRates()
+def programme_principal():
+    convertisseur = CurrencyRates()
     devises_disponibles = ['USD', 'EUR', 'JPY', 'GBP', 'CAD', 'CHF', 'AUD', 'NZD', 'CNY', 'INR', 'BRL', 'ZAR', 'MXN', 'SGD', 'THB']
     print("Devises disponibles:", devises_disponibles)
-    devise_origine = input("Entrez la devise d'origine : ").upper()
-    devise_cible = input("Entrez la devise cible : ").upper()
+    devise_origine = input("Choisissez la devise de départ : ").upper()
+    devise_cible = input("Choisissez la devise d'arrivée : ").upper()
 
     if devise_origine not in devises_disponibles or devise_cible not in devises_disponibles:
         print("Devises invalides. Veuillez choisir parmi les devises disponibles.")
         return
-    taux_de_change_origine = c.get_rates(devise_origine)
-    taux_de_change_cible = c.get_rates(devise_cible)
+    taux_de_change_origine = convertisseur.get_rates(devise_origine)
+    taux_de_change_cible = convertisseur.get_rates(devise_cible)
     taux_de_change = {**taux_de_change_origine, **taux_de_change_cible}
     taux_de_change_personnalise = {}
-    historique_conversion = []
     montant = float(input("Entrez le montant à convertir : "))
-    prix_converti = conversion(montant, devise_origine, devise_cible, taux_de_change)
+    prix_converti = convertir(montant, devise_origine, devise_cible, taux_de_change)
 
     if prix_converti and prix_converti != 0:
         print(f"{montant} {devise_origine} équivaut à {prix_converti:.2f} {devise_cible}")
-        historique_conversion.append({'montant': montant, 'devise_origine': devise_origine, 'devise_cible': devise_cible, 'prix_converti': prix_converti})
+        historique_conversion = [{'montant': montant, 'devise_origine': devise_origine, 'devise_cible': devise_cible, 'prix_converti': prix_converti}]
         ajout_devise = input("Voulez-vous ajouter cette devise en favori ? Oui ou Non ? : ").lower()
         
         if ajout_devise == 'oui':
@@ -55,9 +54,9 @@ def main():
         print("Conversion impossible. Vérifiez les devises saisies.")
 
     if historique_conversion:
-        sauvegarder_historique_conversion(historique_conversion)
+        sauvegarder_conversion(historique_conversion)
 
     print("\nHistorique des conversions :")
     print(*charger_fichier('historique_conversion.txt'), sep='\n')
 
-main()
+programme_principal()
