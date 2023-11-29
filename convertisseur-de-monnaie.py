@@ -37,7 +37,7 @@ def main():
         return
     taux_de_change_origine = c.get_rates(devise_origine)
     taux_de_change_cible = c.get_rates(devise_cible)
-    taux_de_change = {**taux_de_change_origine, **taux_de_change_cible}  # Fusionne les taux de change
+    taux_de_change = {**taux_de_change_origine, **taux_de_change_cible}
     taux_de_change_personnalise = {}
     historique_conversion = []
     montant = float(input("Entrez le montant à convertir : "))
