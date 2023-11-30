@@ -20,7 +20,7 @@ def charger_fichier(nom_fichier, conversion_func=None):
     except FileNotFoundError:
         return []
 
-def ajouter_devise_preferee(devise, taux_conversion, taux_de_change_personnalise):
+def devise_preferee(devise, taux_conversion, taux_de_change_personnalise):
     taux_de_change_personnalise[devise] = taux_conversion
     sauvegarder_favoris(devise, taux_conversion)
     print(f"La devise {devise} avec un taux de conversion de {taux_conversion} a été ajoutée en favori.")
@@ -49,7 +49,7 @@ def programme_principal():
         
         if ajout_devise == 'oui':
             taux_conversion = float(input(f"Entrez le taux de conversion pour {devise_origine} : "))
-            ajouter_devise_preferee(devise_origine, taux_conversion, taux_de_change_personnalise)
+            devise_preferee(devise_origine, taux_conversion, taux_de_change_personnalise)
     else:
         print("Conversion impossible. Vérifiez les devises saisies.")
 
